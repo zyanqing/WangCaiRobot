@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="domain.ChatRecord" table="robot_chatRecord" catalog="robotData">
+        <id name="chatRecord_id" column="chatRecord_id">
+            <generator class="native"/>
+        </id>
+
+        <property name="user_record" column="user_record"/>
+        <property name="robot_record" column="robot_record"/>
+
+        <many-to-one name="user" class="domain.User" column="robort_user_id"/>
+
+    </class>
+
+</hibernate-mapping>

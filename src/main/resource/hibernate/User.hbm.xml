@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+    <class name="domain.User" table="robot_user" catalog="robotData">
+        <id name="user_id" column="user_id">
+            <generator class="native"/>
+        </id>
+
+        <property name="userName" column="userName"/>
+        <property name="userPassword" column="userPassword"/>
+
+        <set name="chatRecords" cascade="save-update,delete" inverse="true">
+            <key column="robort_user_id"/>
+            <one-to-many class="domain.ChatRecord"/>
+        </set>
+
+    </class>
+
+
+</hibernate-mapping>
