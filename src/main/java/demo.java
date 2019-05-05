@@ -12,7 +12,6 @@ import service.UserService;
 import serviceImpl.UserServiceImpl;
 import utils.HibernateUtils;
 import utils.HttpUtils;
-import wechat4j.Wechat;
 
 
 public class demo {
@@ -131,10 +130,6 @@ public class demo {
     @Test
     public void demo9() {
 
-        // 实例化微信客户端
-        Wechat wechat = new Wechat();
-        // 自动登录
-        wechat.autoLogin();
     }
 
 }
