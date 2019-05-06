@@ -11,10 +11,10 @@
     <!-- 指定访问 action 时的后缀名 -->
     <!--<constant name="struts.action.extension" value=""/>-->
 
-    <include file="chatAction.xml"/>
-    <include file="userAction.xml"/>
-    <include file="weChatAction.xml"/>
-    <include file="temp.xml"/>
+    <include file="struts2/chatAction.xml"/>
+    <include file="struts2/userAction.xml"/>
+    <include file="struts2/weChatAction.xml"/>
+    <include file="struts2/temp.xml"/>
 
 
 </struts>
