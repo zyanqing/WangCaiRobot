@@ -8,10 +8,7 @@
 
     <package name="weChatAction" namespace="/" extends="struts-default">
 
-        <action name="wechat_autologin" class="action.WeChatAction" method="{1}">
-
-            <result name="autoLogin"></result>
-
+        <action name="wechat_*" class="action.WeChatAction" method="{1}">
             <allowed-methods>autoLogin</allowed-methods>
         </action>
 

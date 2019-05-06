@@ -268,12 +268,12 @@ public class Wechat {
                 CommonUtil.threadSleep(2000);
                 continue;
             }
-
+            pw.println();
             pw.println("\t成功，请扫描二维码：");
             pw.flush();
-            pw.println(QRCodeUtil.toCharMatrix(data));
-            pw.flush();
-            QRCodeUtil.openQRCodeImage(data);
+//            pw.println(QRCodeUtil.toCharMatrix(data));
+//            pw.flush();
+            QRCodeUtil.writeToTempFile(data);
             return true;
         }
 
@@ -830,7 +830,7 @@ public class Wechat {
                 if (addMsgList == null || addMsgList.isEmpty()) {
                     return;
                 }
-
+                System.out.println(" 正在接收消息： " + addMsgList.toString());
                 int len = addMsgList.size();
                 log.debug("收到{}条新消息", len);
 

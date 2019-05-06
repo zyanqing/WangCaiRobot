@@ -244,7 +244,8 @@ public final class QRCodeUtil {
     public static File writeToTempFile(byte[] data) {
         FileOutputStream fos = null;
         try {
-            File tmp = File.createTempFile(PropertiesUtil.getProperty("wechat4j.qrcode.tmpfile.prefix"), ".jpg");
+//            File tmp = File.createTempFile(PropertiesUtil.getProperty("wechat4j.qrcode.tmpfile.prefix"), ".jpg");
+            File tmp = new File(PropertiesUtil.getProperty("QRImagePath"));
             fos = new FileOutputStream(tmp);
             fos.write(data);
             fos.flush();

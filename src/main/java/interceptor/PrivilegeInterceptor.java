@@ -16,7 +16,7 @@ public class PrivilegeInterceptor extends MethodFilterInterceptor {
 	protected String doIntercept(ActionInvocation invocation) throws Exception {
 
 
-		 if (ServletActionContext.getRequest().getRequestURI().contains("user_login")){
+		 if (ServletActionContext.getRequest().getRequestURI().contains("user_login") || ServletActionContext.getRequest().getRequestURI().contains("autoLogin")){
 		 	return invocation.invoke();
 		 }
 
