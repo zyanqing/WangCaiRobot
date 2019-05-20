@@ -6,6 +6,7 @@
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/WeChat/pom.xml" />
+        <option value="$PROJECT_DIR$/WeChatManage/pom.xml" />
       </list>
     </option>
   </component>

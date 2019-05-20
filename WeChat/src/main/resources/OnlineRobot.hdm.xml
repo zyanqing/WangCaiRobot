@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+
+<hibernate-mapping>
+
+    <class name="domain.OnlineRobot" table="robot_online" catalog="robotData">
+        <id name="id" column="id">
+            <generator class="native"/>
+        </id>
+
+
+        <property name="robot_status" column="robot_status"/>
+
+        <property name="robot_nick_name" column="robot_nick_name"/>
+
+        <property name="robot_user_name" column="robot_user_name"/>
+
+        <property name="robot_is_reply_text" column="robot_is_reply_text"/>
+
+        <property name="robot_is_reply_video" column="robot_is_reply_video"/>
+
+        <property name="robot_is_reply_voice" column="robot_is_reply_voice"/>
+
+        <property name="robot_is_reply_picture" column="robot_is_reply_picture"/>
+
+        <property name="robot_is_mute" column="robot_is_mute"/>
+
+    </class>
+
+
+</hibernate-mapping>

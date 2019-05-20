@@ -2,6 +2,10 @@ package wechat4j;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import dao.OnlineRobotDao;
+import daoImpl.OnlineRobotDaoImpl;
+import domain.OnlineRobot;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
@@ -12,6 +16,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.protocol.HttpContext;
+import utils.MailUtils;
 import wechat4j.enums.*;
 import wechat4j.handler.ExitEventHandler;
 import wechat4j.handler.ReceivedMsgHandler;
@@ -36,6 +41,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Wechat {
     private CookieStore cookieStore;
     private HttpClient httpClient;
+    @Getter
+    private OnlineRobot onlineRobot;
 
     //认证码
     private volatile String wxsid;
@@ -548,6 +555,15 @@ public class Wechat {
         pw.println("微信登录成功，欢迎你：" + getLoginUserNickName(false));
         pw.flush();
 
+        MailUtils.sendMail("微信登录通知", "微信登录成功，欢迎你：" + getLoginUserNickName(false), getLoginUserNickName(false));
+
+        onlineRobot = new OnlineRobot();
+        onlineRobot.setRobot_user_name(getLoginUserName(false));
+        onlineRobot.setRobot_nick_name(getLoginUserNickName(false));
+
+        OnlineRobotDao onlineRobotDao = new OnlineRobotDaoImpl();
+        onlineRobotDao.saveOnlineRobot(onlineRobot);
+
         try {
             isOnlineLock.lock();
 
@@ -580,6 +596,9 @@ public class Wechat {
         if (isOnline) {
             try {
                 isOnlineLock.lock();
+
+                OnlineRobotDao onlineRobotDao = new OnlineRobotDaoImpl();
+                onlineRobotDao.deletOnlineRobot(onlineRobot);
 
                 if (isOnline) {
                     WebWeixinApiUtil.logout(httpClient, urlVersion, new BaseRequest(wxsid, skey, wxuin));
@@ -648,12 +667,24 @@ public class Wechat {
         public void run() {
             int time = PropertiesUtil.getIntValue("wechat4j.syncCheck.retry.time", 5);
             int i = 0;
+            OnlineRobotDao onlineRobotDao = new OnlineRobotDaoImpl();
             while (isOnline) {
                 long start = System.currentTimeMillis();
 
                 try {
                     JSONObject result = WebWeixinApiUtil.syncCheck(httpClient, urlVersion, new BaseRequest(wxsid, skey, wxuin), getSyncKeyList(false));
                     log.info("微信同步监听心跳返回数据：{}", result);
+
+                    // 更新onlineRobot
+                    onlineRobot = onlineRobotDao.updateRobot(onlineRobot);
+
+                    if (onlineRobot.getRobot_status().intValue() == 0) {
+                        log.info("微信退出或从其它设备登录");
+                        logout();
+                        processExitEvent(ExitType.REMOTE_EXIT, null);
+                        return;
+                    }
+
                     if (result == null) {
                         throw new RuntimeException("微信API调用异常");
                     } else {

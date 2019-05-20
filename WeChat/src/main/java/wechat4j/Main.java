@@ -3,8 +3,6 @@ package wechat4j;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import dao.ChatRecordDao;
-import daoImpl.ChatRecordDaoImpl;
 import utils.ChatUtils;
 import wechat4j.handler.ReceivedMsgHandler;
 import wechat4j.model.ReceivedMsg;
@@ -19,6 +17,9 @@ public class Main {
 
 //         实例化微信客户端
         Wechat wechat = new Wechat();
+
+        wechat.addExitEventHandler(new ExitEventHandlerImpl());
+
         final PrintWriter pw = new PrintWriter(System.out);
         wechat.addReceivedMsgHandler(new ReceivedMsgHandler() {
             @Override
@@ -37,14 +38,11 @@ public class Main {
 
                         if (text != null && !text.equals("")) {
                             wechat.sendTextToUserName(msg.getFromUserName(), text);
-                            ChatRecordDao chatRecordService = new ChatRecordDaoImpl();
-                            chatRecordService.saveRecord(msg.getContent(), text, contact.getNickName());
                         }
                     } catch (Exception e) {
                         pw.println(e.getMessage());
                         pw.flush();
                     }
-
 
                 }
 

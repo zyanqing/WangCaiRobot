@@ -6,9 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="WangCaiRobot" />
         <module name="WeChat" />
+        <module name="WeChatManage" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="WangCaiRobot" target="7" />
+    </bytecodeTargetLevel>
   </component>
 </project>
