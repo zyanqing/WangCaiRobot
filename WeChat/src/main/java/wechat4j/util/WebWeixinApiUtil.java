@@ -24,6 +24,8 @@ import wechat4j.model.BaseRequest;
 import wechat4j.model.MediaMessage;
 import wechat4j.model.WxMessage;
 
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -886,6 +888,42 @@ public final class WebWeixinApiUtil {
             return JSONObject.parseObject(res);
         } catch (Exception e) {
             log.error("发送视频消息异常", e);
+            return null;
+        }
+    }
+
+
+    public static byte[] getImg(HttpClient httpClient,
+                                String urlVersion,
+                                String msgid,
+                                String skey,
+                                String path) {
+        try {
+            String url = new ST(PropertiesUtil.getProperty("webwx-url.webwxgetpicmsg_url"))
+                    .add("urlVersion", urlVersion)
+                    .add("msgid", msgid)
+                    .add("skey", skey)
+                    .render();
+
+            HttpGet httpGet = new HttpGet(url);
+
+            HttpResponse response = httpClient.execute(httpGet);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (HttpStatus.SC_OK != statusCode) {
+                throw new RuntimeException("响应失败(" + statusCode + ")");
+            }
+
+            HttpEntity entity = response.getEntity();
+            byte[] imgData = EntityUtils.toByteArray(entity);
+
+            if (path != null) {
+                OutputStream out = new FileOutputStream(path);
+                out.write(imgData);
+                out.flush();
+                out.close();
+            }
+            return imgData;
+        } catch (Exception e) {
             return null;
         }
     }

@@ -12,7 +12,7 @@ public class WeChatAction extends ActionSupport {
 
         try {
             Runtime rt = Runtime.getRuntime();
-            Process pr = rt.exec("java -jar /Users/anjubao/Desktop/Maven/target/WeChat.jar");
+            Process pr = rt.exec("java -jar /Users/anjubao/Desktop/Maven/robot/WeChat.jar");
 
             InputStreamReader in = new InputStreamReader(pr.getInputStream());
             BufferedReader br = new BufferedReader(in);

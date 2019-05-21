@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="WeChat:jar">
-    <output-path>$PROJECT_DIR$/../target/</output-path>
+    <output-path>$PROJECT_DIR$/../robot/</output-path>
     <root id="archive" name="WeChat.jar">
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/WeChat/src/META-INF/MANIFEST.MF" />

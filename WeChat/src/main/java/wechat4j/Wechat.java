@@ -7,6 +7,7 @@ import daoImpl.OnlineRobotDaoImpl;
 import domain.OnlineRobot;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.client.CookieStore;
@@ -24,6 +25,7 @@ import wechat4j.model.*;
 import wechat4j.util.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,6 +42,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 public class Wechat {
     private CookieStore cookieStore;
+    @Getter
     private HttpClient httpClient;
     @Getter
     private OnlineRobot onlineRobot;
@@ -47,9 +50,11 @@ public class Wechat {
     //认证码
     private volatile String wxsid;
     private volatile String passTicket;
+    @Getter
     private volatile String skey;
     private volatile String wxuin;
     //url版本号
+    @Getter
     private volatile String urlVersion;
     //用户数据
     private volatile UserInfo loginUser;
@@ -556,6 +561,14 @@ public class Wechat {
         pw.flush();
 
         MailUtils.sendMail("微信登录通知", "微信登录成功，欢迎你：" + getLoginUserNickName(false), getLoginUserNickName(false));
+
+        //删除登录二维码图片
+        try {
+            FileUtils.forceDelete(new File(PropertiesUtil.getProperty("QRImagePath")));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         onlineRobot = new OnlineRobot();
         onlineRobot.setRobot_user_name(getLoginUserName(false));

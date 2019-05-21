@@ -7,6 +7,7 @@ import utils.ChatUtils;
 import wechat4j.handler.ReceivedMsgHandler;
 import wechat4j.model.ReceivedMsg;
 import wechat4j.model.UserInfo;
+import wechat4j.util.WebWeixinApiUtil;
 
 import java.io.PrintWriter;
 import java.util.Map;
@@ -25,7 +26,11 @@ public class Main {
             @Override
             public void handleAllType(Wechat wechat, ReceivedMsg msg) {
 
-                if (msg.getMsgType().intValue() == 1) {
+                if (wechat.getOnlineRobot().getRobot_is_mute().intValue() == 1) {
+                    return;
+                }
+
+                if (msg.getMsgType().intValue() == 1 && wechat.getOnlineRobot().getRobot_is_reply_text().intValue() == 1) {
 
                     try {
                         UserInfo contact = wechat.getContactByUserName(false, msg.getFromUserName());
@@ -46,6 +51,23 @@ public class Main {
 
                 }
 
+                if (msg.getMsgType().intValue() == 3 && wechat.getOnlineRobot().getRobot_is_reply_picture().intValue() == 1) {
+
+                    System.out.println(msg);
+
+                    WebWeixinApiUtil.getImg(wechat.getHttpClient(),wechat.getUrlVersion(),msg.getMsgId(),wechat.getSkey());
+
+                }
+
+                if (msg.getMsgType().intValue() == 34 && wechat.getOnlineRobot().getRobot_is_reply_voice().intValue() == 1) {
+                    System.out.println(msg);
+                }
+
+                if (msg.getMsgType().intValue() == 62 && wechat.getOnlineRobot().getRobot_is_reply_video().intValue() == 1) {
+                    System.out.println(msg);
+                }
+
+
             }
         });
 
@@ -53,5 +75,6 @@ public class Main {
         wechat.autoLogin();
 
     }
+
 
 }
