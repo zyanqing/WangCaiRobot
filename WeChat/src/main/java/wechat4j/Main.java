@@ -1,16 +1,14 @@
 package wechat4j;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import utils.ChatUtils;
 import wechat4j.handler.ReceivedMsgHandler;
 import wechat4j.model.ReceivedMsg;
 import wechat4j.model.UserInfo;
+import wechat4j.util.PropertiesUtil;
 import wechat4j.util.WebWeixinApiUtil;
 
+import java.io.File;
 import java.io.PrintWriter;
-import java.util.Map;
 
 public class Main {
 
@@ -34,16 +32,11 @@ public class Main {
 
                     try {
                         UserInfo contact = wechat.getContactByUserName(false, msg.getFromUserName());
-                        String result = ChatUtils.chat(msg.getContent(), "123456789");
-                        Map maps = (Map<String, String>) JSON.parse(result);
-                        JSONArray jsonArray = (JSONArray) maps.get("results");
-                        Map results = (Map<String, JSONObject>) jsonArray.get(0);
-                        Map values = (Map<String, String>) results.get("values");
-                        String text = (String) values.get("text");
 
-                        if (text != null && !text.equals("")) {
-                            wechat.sendTextToUserName(msg.getFromUserName(), text);
-                        }
+                        String result = ChatUtils.sendTextMsg(msg.getContent(), String.valueOf(wechat.getLoginUserNickName().hashCode()));
+
+                        wechat.sendTextToUserName(msg.getFromUserName(), result);
+
                     } catch (Exception e) {
                         pw.println(e.getMessage());
                         pw.flush();
@@ -51,22 +44,57 @@ public class Main {
 
                 }
 
+                // 图片消息
                 if (msg.getMsgType().intValue() == 3 && wechat.getOnlineRobot().getRobot_is_reply_picture().intValue() == 1) {
 
-                    System.out.println(msg);
+                    String folderPath = PropertiesUtil.getProperty("ImagePath") + wechat.getLoginUserNickName();
 
-                    WebWeixinApiUtil.getImg(wechat.getHttpClient(),wechat.getUrlVersion(),msg.getMsgId(),wechat.getSkey());
+                    File file = new File(folderPath);
+                    if (!file.exists() && !file.isDirectory()) {
+                        file.mkdir();
+                    }
+                    String filePath = folderPath + "/" + msg.getMsgId() + ".jpg";
 
+                    WebWeixinApiUtil.getImgMsg(wechat.getHttpClient(), wechat.getUrlVersion(), msg.getMsgId(), wechat.getSkey(), filePath);
+
+                    String result = "";
+
+                    String urlPath = "http://wangcairobot.com/img/"+ wechat.getLoginUserNickName() + "/" + msg.getMsgId() + ".jpg";
+
+                    try {
+                        result = ChatUtils.sendImgMsg(urlPath, String.valueOf(wechat.getLoginUserNickName().hashCode()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    wechat.sendTextToUserName(msg.getFromUserName(), result);
                 }
 
+                // 语音消息
                 if (msg.getMsgType().intValue() == 34 && wechat.getOnlineRobot().getRobot_is_reply_voice().intValue() == 1) {
-                    System.out.println(msg);
-                }
 
-                if (msg.getMsgType().intValue() == 62 && wechat.getOnlineRobot().getRobot_is_reply_video().intValue() == 1) {
-                    System.out.println(msg);
-                }
+                    String folderPath = PropertiesUtil.getProperty("VoicePath") + wechat.getLoginUserNickName();
 
+                    File file = new File(folderPath);
+                    if (!file.exists() && !file.isDirectory()) {
+                        file.mkdir();
+                    }
+                    String filePath = folderPath + "/" + msg.getMsgId() + ".mp3";
+
+                    WebWeixinApiUtil.getVoiceMsg(wechat.getHttpClient(), wechat.getUrlVersion(), msg.getMsgId(), wechat.getSkey(), filePath);
+
+                    String result = "";
+
+                    String urlPath = "http://wangcairobot.com/voice/"+ wechat.getLoginUserNickName() + "/" + msg.getMsgId() + ".mp3";
+
+                    try {
+                        result = ChatUtils.sendVoiceMsg(urlPath, String.valueOf(wechat.getLoginUserNickName().hashCode()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    wechat.sendTextToUserName(msg.getFromUserName(), result);
+                }
 
             }
         });

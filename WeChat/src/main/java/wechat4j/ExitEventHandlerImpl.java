@@ -24,8 +24,9 @@ public class ExitEventHandlerImpl implements ExitEventHandler {
      * @param wechat 微信客户端
      */
     @Override
-    public void handleErrorExitEvent(Wechat wechat){
-        MailUtils.sendMail("微信退出通知","错误导致的退出事件",wechat.getOnlineRobot().getRobot_nick_name());
+    public void handleErrorExitEvent(Wechat wechat) {
+        MailUtils.sendMail("微信退出通知", "错误导致的退出事件", wechat.getOnlineRobot().getRobot_nick_name());
+
     }
 
     /**
@@ -35,7 +36,8 @@ public class ExitEventHandlerImpl implements ExitEventHandler {
      */
     @Override
     public void handleRemoteExitEvent(Wechat wechat) {
-        MailUtils.sendMail("微信退出通知","远程人为导致的退出事件",wechat.getOnlineRobot().getRobot_nick_name());
+        MailUtils.sendMail("微信退出通知", "远程人为导致的退出事件", wechat.getOnlineRobot().getRobot_nick_name());
+
     }
 
     /**
@@ -45,7 +47,8 @@ public class ExitEventHandlerImpl implements ExitEventHandler {
      */
     @Override
     public void handleLocalExitEvent(Wechat wechat) {
-        MailUtils.sendMail("微信退出通知","本地任务导致的退出事件",wechat.getOnlineRobot().getRobot_nick_name());
+        MailUtils.sendMail("微信退出通知", "本地任务导致的退出事件", wechat.getOnlineRobot().getRobot_nick_name());
+
     }
 
 }

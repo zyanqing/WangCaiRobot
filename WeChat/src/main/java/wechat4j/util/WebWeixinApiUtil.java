@@ -893,11 +893,11 @@ public final class WebWeixinApiUtil {
     }
 
 
-    public static byte[] getImg(HttpClient httpClient,
-                                String urlVersion,
-                                String msgid,
-                                String skey,
-                                String path) {
+    public static void getImgMsg(HttpClient httpClient,
+                                   String urlVersion,
+                                   String msgid,
+                                   String skey,
+                                   String path) {
         try {
             String url = new ST(PropertiesUtil.getProperty("webwx-url.webwxgetpicmsg_url"))
                     .add("urlVersion", urlVersion)
@@ -922,9 +922,79 @@ public final class WebWeixinApiUtil {
                 out.flush();
                 out.close();
             }
-            return imgData;
+
         } catch (Exception e) {
-            return null;
+            e.printStackTrace();
+        }
+    }
+
+    public static void getVoiceMsg(HttpClient httpClient,
+                                   String urlVersion,
+                                   String msgid,
+                                   String skey,
+                                   String path) {
+        try {
+            String url = new ST(PropertiesUtil.getProperty("webwx-url.webwxgetvoicemsg_url"))
+                    .add("urlVersion", urlVersion)
+                    .add("msgid", msgid)
+                    .add("skey", skey)
+                    .render();
+
+            HttpGet httpGet = new HttpGet(url);
+
+            HttpResponse response = httpClient.execute(httpGet);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (HttpStatus.SC_OK != statusCode) {
+                throw new RuntimeException("响应失败(" + statusCode + ")");
+            }
+
+            HttpEntity entity = response.getEntity();
+            byte[] voiceData = EntityUtils.toByteArray(entity);
+
+            if (path != null) {
+                OutputStream out = new FileOutputStream(path);
+                out.write(voiceData);
+                out.flush();
+                out.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void getVideoMsg(HttpClient httpClient,
+                                   String urlVersion,
+                                   String msgid,
+                                   String skey,
+                                   String path) {
+        try {
+            String url = new ST(PropertiesUtil.getProperty("webwx-url.webwxgetvideomsg_url"))
+                    .add("urlVersion", urlVersion)
+                    .add("msgid", msgid)
+                    .add("skey", skey)
+                    .render();
+
+            HttpGet httpGet = new HttpGet(url);
+            httpGet.setHeader("Range", "bytes=0-");
+            HttpResponse response = httpClient.execute(httpGet);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (HttpStatus.SC_OK != statusCode) {
+                throw new RuntimeException("响应失败(" + statusCode + ")");
+            }
+
+            HttpEntity entity = response.getEntity();
+            byte[] voiceData = EntityUtils.toByteArray(entity);
+
+            if (path != null) {
+                OutputStream out = new FileOutputStream(path);
+                out.write(voiceData);
+                out.flush();
+                out.close();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
