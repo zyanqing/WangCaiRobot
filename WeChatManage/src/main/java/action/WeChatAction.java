@@ -10,10 +10,12 @@ import daoImpl.OnlineRobotDaoImpl;
 import daoImpl.RobotConfigurationDaoImpl;
 import domain.OnlineRobot;
 import domain.RobotConfiguration;
+import org.apache.commons.io.FileUtils;
 import org.apache.struts2.ServletActionContext;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -29,11 +31,31 @@ public class WeChatAction extends ActionSupport implements ModelDriven<OnlineRob
         return onlineRobot;
     }
 
-    public String login() {
+    public void login(String dirName) {
+
+//        String basePath = "/Users/anjubao/Desktop/Maven/robots/";
+        String basePath = "/tmp/robots/";
+
+        String dirPath = basePath + dirName;
+
+        File file = new File(dirPath);
+        if (!file.exists() && !file.isDirectory()) {
+            file.mkdir();
+        }
+
+        String filePath = dirPath + "/WeChat-1.0.jar";
+
+        File srcFile = new File(basePath + "WeChat-1.0.jar");
+        File destFile = new File(filePath);
+        try {
+            FileUtils.copyFile(srcFile,destFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         try {
             Runtime rt = Runtime.getRuntime();
-            Process pr = rt.exec("java -jar /Users/anjubao/Desktop/Maven/robot/WeChat.jar");
+            Process pr = rt.exec("java -jar " + filePath);
 
             InputStreamReader in = new InputStreamReader(pr.getInputStream());
             BufferedReader br = new BufferedReader(in);
@@ -48,8 +70,28 @@ public class WeChatAction extends ActionSupport implements ModelDriven<OnlineRob
             e.printStackTrace();
         }
 
+    }
+
+    public String robot1() {
+        login("rotbot1");
         return NONE;
     }
+
+    public String robot2() {
+        login("rotbot2");
+        return NONE;
+    }
+
+    public String robot4() {
+        login("rotbot4");
+        return NONE;
+    }
+
+    public String robot3() {
+        login("rotbot3");
+        return NONE;
+    }
+
 
     public String updateCfg() {
 
@@ -91,7 +133,7 @@ public class WeChatAction extends ActionSupport implements ModelDriven<OnlineRob
     }
 
 
-    public String updateRobot(){
+    public String updateRobot() {
 
         OnlineRobotDao dao = new OnlineRobotDaoImpl();
         dao.updateRobot(onlineRobot);

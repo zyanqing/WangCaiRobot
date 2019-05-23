@@ -6,11 +6,11 @@
 
 <struts>
 
-    <package name="weChatAction" namespace="/wechat" extends="struts-default">
+    <package name="weChatAction" namespace="/manage" extends="struts-default">
 
         <action name="*" class="action.WeChatAction" method="{0}">
 
-            <allowed-methods>login,updateCfg,getRobots,updateRobot</allowed-methods>
+            <allowed-methods>updateCfg,getRobots,updateRobot,robot1,robot2,robot3,robot4</allowed-methods>
         </action>
 
     </package>
