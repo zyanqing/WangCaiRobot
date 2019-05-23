@@ -25,6 +25,7 @@
         <property name="hibernate.connection.isolation">4</property>
 
         <mapping resource="OnlineRobot.hdm.xml"/>
+        <mapping resource="RobotConfiguration.hdm.xml"/>
 
     </session-factory>
 

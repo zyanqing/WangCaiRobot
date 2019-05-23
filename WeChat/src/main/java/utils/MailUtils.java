@@ -20,9 +20,9 @@ public class MailUtils {
     private static String myEmailSMTPHost = "smtp.163.com";
 
     // 收件人邮箱（替换为自己知道的有效邮箱）
-    private static String receiveMailAccount = "13824452827@139.com";
+//    private static String receiveMailAccount = "13824452827@139.com";
 
-    public static void send(String title, String msg, String usermane) throws Exception {
+    public static void send(String receiveMailAccount, String title, String msg, String usermane) throws Exception {
         // 1. 创建参数配置, 用于连接邮件服务器的参数配置
         Properties props = new Properties();                    // 参数配置
         props.setProperty("mail.transport.protocol", "smtp");   // 使用的协议（JavaMail规范要求）
@@ -112,13 +112,13 @@ public class MailUtils {
         return message;
     }
 
-    public static void sendMail(final String title, final String msg, final String username){
+    public static void sendMail(final String receiveMailAccount, final String title, final String msg, final String username){
 
             Thread thread = new Thread(){
                 @Override
                 public void run() {
                     try {
-                        MailUtils.send(title,msg,username);
+                        MailUtils.send(receiveMailAccount,title,msg,username);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

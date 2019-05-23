@@ -3,8 +3,11 @@ package wechat4j;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import dao.OnlineRobotDao;
+import dao.RobotConfigurationDao;
 import daoImpl.OnlineRobotDaoImpl;
+import daoImpl.RobotConfigurationDaoImpl;
 import domain.OnlineRobot;
+import domain.RobotConfiguration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -46,6 +49,8 @@ public class Wechat {
     private HttpClient httpClient;
     @Getter
     private OnlineRobot onlineRobot;
+    @Getter
+    private RobotConfiguration robotConfiguration;
 
     //认证码
     private volatile String wxsid;
@@ -560,8 +565,6 @@ public class Wechat {
         pw.println("微信登录成功，欢迎你：" + getLoginUserNickName(false));
         pw.flush();
 
-        MailUtils.sendMail("微信登录通知", "微信登录成功，欢迎你：" + getLoginUserNickName(false), getLoginUserNickName(false));
-
         //删除登录二维码图片
         try {
             FileUtils.forceDelete(new File(PropertiesUtil.getProperty("QRImagePath")));
@@ -576,6 +579,12 @@ public class Wechat {
 
         OnlineRobotDao onlineRobotDao = new OnlineRobotDaoImpl();
         onlineRobotDao.saveOnlineRobot(onlineRobot);
+
+        RobotConfigurationDao dao = new RobotConfigurationDaoImpl();
+        robotConfiguration = dao.getRobotConfiguration();
+
+        // 发送登录通知邮件
+        MailUtils.sendMail(robotConfiguration.getDefault_email_address(),"微信登录通知", "微信登录成功，欢迎你：" + getLoginUserNickName(false), getLoginUserNickName(false));
 
         try {
             isOnlineLock.lock();
