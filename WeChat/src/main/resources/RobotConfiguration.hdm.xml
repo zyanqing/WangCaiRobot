@@ -12,7 +12,6 @@
             <generator class="native"/>
         </id>
 
-
         <property name="default_email_address" column="default_email_address"/>
 
     </class>

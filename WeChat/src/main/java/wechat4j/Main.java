@@ -28,12 +28,17 @@ public class Main {
                     return;
                 }
 
-                if (msg.getMsgType().intValue() == 1 && wechat.getOnlineRobot().getRobot_is_reply_text().intValue() == 1) {
+
+
+                if (msg.getMsgType().intValue() == 1 && wechat.getOnlineRobot().getRobot_is_reply_text().intValue() == 1 && msg.getContent().contains("@旺财")) {
+
+                    String str = msg.getContent().substring(msg.getContent().indexOf("@旺财"));
+                    String message = str.replace("@旺财","");
 
                     try {
                         UserInfo contact = wechat.getContactByUserName(false, msg.getFromUserName());
 
-                        String result = ChatUtils.sendTextMsg(msg.getContent(), String.valueOf(wechat.getLoginUserNickName().hashCode()));
+                        String result = ChatUtils.sendTextMsg(message, String.valueOf(wechat.getLoginUserNickName().hashCode()));
 
                         wechat.sendTextToUserName(msg.getFromUserName(), result);
 
@@ -104,5 +109,12 @@ public class Main {
 
     }
 
+
+//    @Test
+//    public void test(){
+//        String str = "@旺财 广州天气";
+//        String str2 = str.substring(str.indexOf("@旺财"));
+//        System.out.println(str2);
+//    }
 
 }

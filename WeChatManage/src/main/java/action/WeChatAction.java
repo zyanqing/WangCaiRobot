@@ -18,8 +18,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class WeChatAction extends ActionSupport implements ModelDriven<OnlineRobot> {
@@ -31,12 +30,12 @@ public class WeChatAction extends ActionSupport implements ModelDriven<OnlineRob
         return onlineRobot;
     }
 
-    public void login(String dirName) {
+    public void login() {
 
 //        String basePath = "/Users/anjubao/Desktop/Maven/robots/";
         String basePath = "/tmp/robots/";
 
-        String dirPath = basePath + dirName;
+        String dirPath = basePath + System.currentTimeMillis();
 
         File file = new File(dirPath);
         if (!file.exists() && !file.isDirectory()) {
@@ -48,14 +47,24 @@ public class WeChatAction extends ActionSupport implements ModelDriven<OnlineRob
         File srcFile = new File(basePath + "WeChat-1.0.jar");
         File destFile = new File(filePath);
         try {
-            FileUtils.copyFile(srcFile,destFile);
+            FileUtils.copyFile(srcFile, destFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+
+        Timer timer = new Timer();
+
+
         try {
             Runtime rt = Runtime.getRuntime();
-            Process pr = rt.exec("java -jar " + filePath);
+            final Process pr = rt.exec("java -jar " + filePath);
+
+            timer.schedule(new TimerTask() {
+                public void run() {
+                    pr.destroy();
+                }
+            }, 30 * 1000);
 
             InputStreamReader in = new InputStreamReader(pr.getInputStream());
             BufferedReader br = new BufferedReader(in);
@@ -64,6 +73,9 @@ public class WeChatAction extends ActionSupport implements ModelDriven<OnlineRob
 
             while ((str = br.readLine()) != null) {
                 System.out.println(str);
+                if (str.contains("登录成功")) {
+                    timer.cancel();
+                }
             }
 
         } catch (Exception e) {
@@ -73,25 +85,54 @@ public class WeChatAction extends ActionSupport implements ModelDriven<OnlineRob
     }
 
     public String robot1() {
-        login("rotbot1");
+        login();
         return NONE;
     }
 
     public String robot2() {
-        login("rotbot2");
-        return NONE;
-    }
-
-    public String robot4() {
-        login("rotbot4");
+        login();
         return NONE;
     }
 
     public String robot3() {
-        login("rotbot3");
+        login();
         return NONE;
     }
 
+    public String robot4() {
+        login();
+        return NONE;
+    }
+
+    public String robot5() {
+        login();
+        return NONE;
+    }
+
+    public String robot6() {
+        login();
+        return NONE;
+    }
+
+    public String robot7() {
+        login();
+        return NONE;
+    }
+
+    public String robot8() {
+        login();
+        return NONE;
+    }
+
+    public String robot9() {
+        login();
+        return NONE;
+    }
+
+    public String robot10() {
+        login();
+        return NONE;
+    }
 
     public String updateCfg() {
 
@@ -99,13 +140,41 @@ public class WeChatAction extends ActionSupport implements ModelDriven<OnlineRob
 
         Map<String, Object> map = context.getParameters();
 
-        String email = null;
+        String[] values = (String[]) map.get("email");
 
-        if ((email = (String) map.get("email")) != null) {
-            RobotConfiguration configuration = new RobotConfiguration();
-            configuration.setDefault_email_address(email);
-            RobotConfigurationDao dao = new RobotConfigurationDaoImpl();
-            dao.updateRobotConfiguration(configuration);
+        RobotConfiguration configuration = new RobotConfiguration();
+        configuration.setDefault_email_address(Arrays.toString(values).replace("[","").replace("]",""));
+        RobotConfigurationDao dao = new RobotConfigurationDaoImpl();
+        dao.updateRobotConfiguration(configuration);
+
+        HttpServletResponse response = ServletActionContext.getResponse();
+
+        response.setCharacterEncoding("utf-8");
+
+        try {
+            response.getWriter().write("{\"success\":\"ok\"}");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return NONE;
+    }
+
+    public String getCfg() {
+
+        RobotConfigurationDao dao = new RobotConfigurationDaoImpl();
+        RobotConfiguration configuration = dao.getRobotConfiguration();
+
+        String jsonCfg = JSON.toJSONString(configuration);
+
+        HttpServletResponse response = ServletActionContext.getResponse();
+
+        response.setCharacterEncoding("utf-8");
+
+        try {
+            response.getWriter().write(jsonCfg);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return NONE;
@@ -137,6 +206,16 @@ public class WeChatAction extends ActionSupport implements ModelDriven<OnlineRob
 
         OnlineRobotDao dao = new OnlineRobotDaoImpl();
         dao.updateRobot(onlineRobot);
+
+        HttpServletResponse response = ServletActionContext.getResponse();
+
+        response.setCharacterEncoding("utf-8");
+
+        try {
+            response.getWriter().write("{\"success\":\"ok\"}");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return NONE;
     }

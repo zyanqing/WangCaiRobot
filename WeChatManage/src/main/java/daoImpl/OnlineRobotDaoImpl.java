@@ -41,6 +41,7 @@ public class OnlineRobotDaoImpl implements OnlineRobotDao {
         if (list.size() > 0){
 
             oldRobot = list.get(0);
+            oldRobot.setRobot_status(newRobot.getRobot_status());
             oldRobot.setRobot_is_mute(newRobot.getRobot_is_mute());
             oldRobot.setRobot_is_reply_picture(newRobot.getRobot_is_reply_picture());
             oldRobot.setRobot_is_reply_text(newRobot.getRobot_is_reply_text());

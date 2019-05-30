@@ -10,7 +10,7 @@
 
         <action name="*" class="action.WeChatAction" method="{0}">
 
-            <allowed-methods>updateCfg,getRobots,updateRobot,robot1,robot2,robot3,robot4</allowed-methods>
+            <allowed-methods>updateCfg,getRobots,getCfg,updateRobot,robot1,robot2,robot3,robot4,robot5,robot6,robot7,robot8,robot9,robot10</allowed-methods>
         </action>
 
     </package>

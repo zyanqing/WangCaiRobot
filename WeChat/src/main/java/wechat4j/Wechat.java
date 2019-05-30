@@ -586,6 +586,9 @@ public class Wechat {
         // 发送登录通知邮件
         MailUtils.sendMail(robotConfiguration.getDefault_email_address(),"微信登录通知", "微信登录成功，欢迎你：" + getLoginUserNickName(false), getLoginUserNickName(false));
 
+        pw.write("登录成功");
+        pw.flush();
+
         try {
             isOnlineLock.lock();
 
