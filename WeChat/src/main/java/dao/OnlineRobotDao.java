@@ -1,14 +1,16 @@
 package dao;
 
-import domain.OnlineRobot;
+import domain.Robot;
 
 public interface OnlineRobotDao {
 
-    public OnlineRobot updateRobot(OnlineRobot oldRobot);
+    public Robot updateRobot(Robot oldRobot);
 
-    public void saveOnlineRobot(OnlineRobot robot);
+    public void saveOnlineRobot(Robot robot);
 
-    public void deletOnlineRobot(OnlineRobot robot);
+    public void deletOnlineRobot(Robot robot);
+
+    public void changeRobot(Robot robot);
 
 }
 

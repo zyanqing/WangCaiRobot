@@ -1,14 +1,14 @@
 package dao;
 
-import domain.OnlineRobot;
+import domain.Robot;
 
 import java.util.List;
 
 public interface OnlineRobotDao {
 
-    public List<OnlineRobot> getRobots();
+    public List<Robot> getRobots();
 
-    public void updateRobot(OnlineRobot newRobot);
+    public void updateRobot(Robot newRobot);
 
 
 

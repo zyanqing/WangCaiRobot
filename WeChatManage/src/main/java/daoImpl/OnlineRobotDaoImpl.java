@@ -1,7 +1,7 @@
 package daoImpl;
 
 import dao.OnlineRobotDao;
-import domain.OnlineRobot;
+import domain.Robot;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -12,14 +12,14 @@ import java.util.List;
 public class OnlineRobotDaoImpl implements OnlineRobotDao {
 
     @Override
-    public List<OnlineRobot> getRobots() {
+    public List<Robot> getRobots() {
 
         Session session = HibernateUtils.getCurrentSession();
         Transaction transaction = session.beginTransaction();
 
-        Query query = session.createQuery("from OnlineRobot");
+        Query query = session.createQuery("from Robot");
 
-        List<OnlineRobot> list = query.list();
+        List<Robot> list = query.list();
 
         transaction.commit();
 
@@ -27,26 +27,26 @@ public class OnlineRobotDaoImpl implements OnlineRobotDao {
     }
 
     @Override
-    public void updateRobot(OnlineRobot newRobot) {
+    public void updateRobot(Robot newRobot) {
 
-        OnlineRobot oldRobot = null;
+        Robot oldRobot = null;
 
         Session session = HibernateUtils.getCurrentSession();
         Transaction transaction = session.beginTransaction();
 
         Query query = session.createQuery("from OnlineRobot");
 
-        List<OnlineRobot> list = query.list();
+        List<Robot> list = query.list();
 
         if (list.size() > 0){
 
             oldRobot = list.get(0);
-            oldRobot.setRobot_status(newRobot.getRobot_status());
-            oldRobot.setRobot_is_mute(newRobot.getRobot_is_mute());
-            oldRobot.setRobot_is_reply_picture(newRobot.getRobot_is_reply_picture());
-            oldRobot.setRobot_is_reply_text(newRobot.getRobot_is_reply_text());
-            oldRobot.setRobot_is_reply_video(newRobot.getRobot_is_reply_video());
-            oldRobot.setRobot_is_reply_voice(newRobot.getRobot_is_reply_voice());
+            oldRobot.setStatus(newRobot.getStatus());
+            oldRobot.setIsMute(newRobot.getIsMute());
+            oldRobot.setIsPicture(newRobot.getIsPicture());
+            oldRobot.setIsTtext(newRobot.getIsTtext());
+            oldRobot.setIsVideo(newRobot.getIsVideo());
+            oldRobot.setIsVoice(newRobot.getIsVoice());
 
             session.update(oldRobot);
         }

@@ -26,6 +26,7 @@
 
         <mapping resource="RobotConfiguration.hdm.xml"/>
         <mapping resource="OnlineRobot.hdm.xml"/>
+        <mapping resource="TuringAccount.hdm.xml"/>
     </session-factory>
 
 </hibernate-configuration>

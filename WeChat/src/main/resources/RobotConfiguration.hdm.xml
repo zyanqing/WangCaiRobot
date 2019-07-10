@@ -12,7 +12,8 @@
             <generator class="native"/>
         </id>
 
-        <property name="default_email_address" column="default_email_address"/>
+        <property name="notifyMail" column="notify_mail"/>
+        <property name="notifyPhone" column="notify_phone"/>
 
     </class>
 

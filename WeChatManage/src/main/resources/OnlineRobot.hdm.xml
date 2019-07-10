@@ -7,29 +7,41 @@
 
 <hibernate-mapping>
 
-    <class name="domain.OnlineRobot" table="robot_online" catalog="robotData">
+    <class name="domain.Robot" table="robot" catalog="robot_data">
         <id name="id" column="id">
             <generator class="native"/>
         </id>
 
 
-        <property name="robot_status" column="robot_status"/>
+        <property name="status" column="status"/>
 
-        <property name="robot_nick_name" column="robot_nick_name"/>
+        <property name="nickName" column="nick_name"/>
 
-        <property name="robot_user_name" column="robot_user_name"/>
+        <property name="userName" column="user_name"/>
 
-        <property name="robot_is_reply_text" column="robot_is_reply_text"/>
+        <property name="isTtext" column="is_text"/>
 
-        <property name="robot_is_reply_video" column="robot_is_reply_video"/>
+        <property name="isVideo" column="is_video"/>
 
-        <property name="robot_is_reply_voice" column="robot_is_reply_voice"/>
+        <property name="isVoice" column="is_voice"/>
 
-        <property name="robot_is_reply_picture" column="robot_is_reply_picture"/>
+        <property name="isPicture" column="is_picture"/>
 
-        <property name="robot_is_mute" column="robot_is_mute"/>
+        <property name="notifyMail" column="notify_mail"/>
 
-        <property name="robot_mail_address" column="robot_mail_address"/>
+        <property name="createTime" column="create_time"/>
+
+        <property name="modifyTime" column="modify_time"/>
+
+        <property name="loginTime" column="login_time"/>
+
+        <property name="dropoutTime" column="dropout_time"/>
+
+        <property name="notifyPhone" column="notify_phone"/>
+
+        <property name="isMute" column="is_mute"/>
+
+        <many-to-one name="turingAccount" lazy="false" class="domain.TuringAccount" column="FK_TA_RB"/>
 
     </class>
 

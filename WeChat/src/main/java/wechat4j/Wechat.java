@@ -4,10 +4,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import dao.OnlineRobotDao;
 import dao.RobotConfigurationDao;
+import dao.TuringAccountDao;
 import daoImpl.OnlineRobotDaoImpl;
 import daoImpl.RobotConfigurationDaoImpl;
-import domain.OnlineRobot;
+import daoImpl.TuringAccountDaoImpl;
+import domain.Robot;
 import domain.RobotConfiguration;
+import domain.TuringAccount;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -32,6 +35,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -48,7 +52,7 @@ public class Wechat {
     @Getter
     private HttpClient httpClient;
     @Getter
-    private OnlineRobot onlineRobot;
+    private Robot onlineRobot;
     @Getter
     private RobotConfiguration robotConfiguration;
 
@@ -286,7 +290,7 @@ public class Wechat {
                 continue;
             }
             pw.println();
-            pw.println("\t成功，请扫描二维码：");
+            pw.println("qrPath:" + PropertiesUtil.getProperty("QRImagePath"));
             pw.flush();
 //            pw.println(QRCodeUtil.toCharMatrix(data));
 //            pw.flush();
@@ -568,23 +572,38 @@ public class Wechat {
         //删除登录二维码图片
         try {
             FileUtils.forceDelete(new File(PropertiesUtil.getProperty("QRImagePath")));
-
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        onlineRobot = new OnlineRobot();
-        onlineRobot.setRobot_user_name(getLoginUserName(false));
-        onlineRobot.setRobot_nick_name(getLoginUserNickName(false));
+        RobotConfigurationDao dao = new RobotConfigurationDaoImpl();
+        robotConfiguration = dao.getRobotConfiguration();
+
+        onlineRobot = new Robot();
+        onlineRobot.setUserName(getLoginUserName(false));
+        onlineRobot.setNickName(getLoginUserNickName(false));
+        onlineRobot.setCreateTime(new Date());
+        onlineRobot.setNotifyMail(robotConfiguration.getNotifyMail());
+        onlineRobot.setNotifyPhone(robotConfiguration.getNotifyPhone());
+
+        TuringAccountDao turingAccountDao = new TuringAccountDaoImpl();
+        List<TuringAccount> list = turingAccountDao.findTuringAccount();
+
+        TuringAccount turingAccount = null;
+
+        for (TuringAccount t : list){
+            if (t.isDefault()){
+                turingAccount = t;
+            }
+        }
+
+        onlineRobot.setTuringAccount(turingAccount);
 
         OnlineRobotDao onlineRobotDao = new OnlineRobotDaoImpl();
         onlineRobotDao.saveOnlineRobot(onlineRobot);
 
-        RobotConfigurationDao dao = new RobotConfigurationDaoImpl();
-        robotConfiguration = dao.getRobotConfiguration();
-
         // 发送登录通知邮件
-        MailUtils.sendMail(robotConfiguration.getDefault_email_address(),"微信登录通知", "微信登录成功，欢迎你：" + getLoginUserNickName(false), getLoginUserNickName(false));
+        MailUtils.sendMail(robotConfiguration.getNotifyMail(), "微信登录通知", "微信登录成功，欢迎你：" + getLoginUserNickName(false), getLoginUserNickName(false));
 
         pw.write("登录成功");
         pw.flush();
@@ -621,9 +640,6 @@ public class Wechat {
         if (isOnline) {
             try {
                 isOnlineLock.lock();
-
-                OnlineRobotDao onlineRobotDao = new OnlineRobotDaoImpl();
-                onlineRobotDao.deletOnlineRobot(onlineRobot);
 
                 if (isOnline) {
                     WebWeixinApiUtil.logout(httpClient, urlVersion, new BaseRequest(wxsid, skey, wxuin));
@@ -703,7 +719,7 @@ public class Wechat {
                     // 更新onlineRobot
                     onlineRobot = onlineRobotDao.updateRobot(onlineRobot);
 
-                    if (onlineRobot.getRobot_status().intValue() == 0) {
+                    if (onlineRobot.getStatus().intValue() == 0) {
                         log.info("微信退出或从其它设备登录");
                         logout();
                         processExitEvent(ExitType.REMOTE_EXIT, null);

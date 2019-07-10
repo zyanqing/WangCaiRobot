@@ -46,10 +46,10 @@ public class RobotConfigurationDaoImpl implements RobotConfigurationDao {
 
         if (list.size() > 0){
             newConfiguration = list.get(0);
-            newConfiguration.setDefault_email_address(configuration.getDefault_email_address());
+            newConfiguration.setNotifyMail(configuration.getNotifyMail());
         }else {
             newConfiguration = new RobotConfiguration();
-            newConfiguration.setDefault_email_address(configuration.getDefault_email_address());
+            newConfiguration.setNotifyMail(configuration.getNotifyMail());
         }
         session.saveOrUpdate(newConfiguration);
         transaction.commit();

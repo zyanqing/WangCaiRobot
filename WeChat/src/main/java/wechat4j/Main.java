@@ -24,21 +24,19 @@ public class Main {
             @Override
             public void handleAllType(Wechat wechat, ReceivedMsg msg) {
 
-                if (wechat.getOnlineRobot().getRobot_is_mute().intValue() == 1) {
+                if (wechat.getOnlineRobot().isMute()) {
                     return;
                 }
 
+                if (msg.getMsgType().intValue() == 1 && wechat.getOnlineRobot().isText()) {
 
-
-                if (msg.getMsgType().intValue() == 1 && wechat.getOnlineRobot().getRobot_is_reply_text().intValue() == 1 && msg.getContent().contains("@旺财")) {
-
-                    String str = msg.getContent().substring(msg.getContent().indexOf("@旺财"));
-                    String message = str.replace("@旺财","");
+//                    String str = msg.getContent().substring(msg.getContent().indexOf("@旺财"));
+//                    String message = str.replace("@旺财","");
 
                     try {
                         UserInfo contact = wechat.getContactByUserName(false, msg.getFromUserName());
 
-                        String result = ChatUtils.sendTextMsg(message, String.valueOf(wechat.getLoginUserNickName().hashCode()));
+                        String result = ChatUtils.sendTextMsg(msg.getContent(), String.valueOf(wechat.getLoginUserNickName().hashCode()),wechat.getOnlineRobot());
 
                         wechat.sendTextToUserName(msg.getFromUserName(), result);
 
@@ -50,7 +48,7 @@ public class Main {
                 }
 
                 // 图片消息
-                if (msg.getMsgType().intValue() == 3 && wechat.getOnlineRobot().getRobot_is_reply_picture().intValue() == 1) {
+                if (msg.getMsgType().intValue() == 3 && wechat.getOnlineRobot().isPicture()) {
 
                     String folderPath = PropertiesUtil.getProperty("ImagePath") + wechat.getLoginUserNickName();
 
@@ -64,10 +62,10 @@ public class Main {
 
                     String result = "";
 
-                    String urlPath = "http://wangcairobot.com/img/"+ wechat.getLoginUserNickName() + "/" + msg.getMsgId() + ".jpg";
+                    String urlPath = "http://wangcairobot.com/img/" + wechat.getLoginUserNickName() + "/" + msg.getMsgId() + ".jpg";
 
                     try {
-                        result = ChatUtils.sendImgMsg(urlPath, String.valueOf(wechat.getLoginUserNickName().hashCode()));
+                        result = ChatUtils.sendImgMsg(urlPath, String.valueOf(wechat.getLoginUserNickName().hashCode()),wechat.getOnlineRobot());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -76,7 +74,7 @@ public class Main {
                 }
 
                 // 语音消息
-                if (msg.getMsgType().intValue() == 34 && wechat.getOnlineRobot().getRobot_is_reply_voice().intValue() == 1) {
+                if (msg.getMsgType().intValue() == 34 && wechat.getOnlineRobot().isVideo()) {
 
                     String folderPath = PropertiesUtil.getProperty("VoicePath") + wechat.getLoginUserNickName();
 
@@ -90,10 +88,10 @@ public class Main {
 
                     String result = "";
 
-                    String urlPath = "http://wangcairobot.com/voice/"+ wechat.getLoginUserNickName() + "/" + msg.getMsgId() + ".mp3";
+                    String urlPath = "http://wangcairobot.com/voice/" + wechat.getLoginUserNickName() + "/" + msg.getMsgId() + ".mp3";
 
                     try {
-                        result = ChatUtils.sendVoiceMsg(urlPath, String.valueOf(wechat.getLoginUserNickName().hashCode()));
+                        result = ChatUtils.sendVoiceMsg(urlPath, String.valueOf(wechat.getLoginUserNickName().hashCode()),wechat.getOnlineRobot());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -111,10 +109,11 @@ public class Main {
 
 
 //    @Test
-//    public void test(){
-//        String str = "@旺财 广州天气";
-//        String str2 = str.substring(str.indexOf("@旺财"));
-//        System.out.println(str2);
+//    public void demo() {
+//        OnlineRobotDao onlineRobotDao = new OnlineRobotDaoImpl();
+//        Robot robot = new Robot();
+//        robot.setId(6l);
+//        onlineRobotDao.changeRobot(robot);
 //    }
 
 }
