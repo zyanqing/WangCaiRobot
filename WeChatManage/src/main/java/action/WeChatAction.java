@@ -70,8 +70,7 @@ public class WeChatAction extends ActionSupport implements ModelDriven<Robot> {
                 public void run() {
                     pr.destroy();
                 }
-            }, 120 * 1000);
-
+            }, 150 * 1000);
 
             InputStreamReader in = new InputStreamReader(pr.getInputStream());
             BufferedReader br = new BufferedReader(in);
@@ -83,7 +82,21 @@ public class WeChatAction extends ActionSupport implements ModelDriven<Robot> {
                 if (str.contains("qrPath:")) {
                     timer.cancel();
                     qrPath = str.replace("qrPath:","");
-                    ServletActionContext.getResponse().getWriter().write(qrPath);
+
+                    Map<String,Object> map = new HashMap<String,Object>();
+
+                    Map<String,Object> dataMap = new HashMap<>();
+                    dataMap.put("path",qrPath);
+
+                    map.put("result","200");
+                    map.put("message","请扫码登录");
+                    map.put("data",dataMap);
+
+                    String jsonCfg = JSON.toJSONString(map);
+
+                    HttpServletResponse response = ServletActionContext.getResponse();
+                    response.setCharacterEncoding("utf-8");
+                    ServletActionContext.getResponse().getWriter().write(jsonCfg);
                     break;
                 }
             }
@@ -92,7 +105,7 @@ public class WeChatAction extends ActionSupport implements ModelDriven<Robot> {
             e.printStackTrace();
         }
 
-        System.out.println("========== 结束执行 ==========");
+        System.out.println("========== Action结束 ==========");
         return NONE;
     }
 
